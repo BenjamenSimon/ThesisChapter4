@@ -1,0 +1,123 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+
+# Load the ggplot2 library
+library(ggplot2)
+
+```
+
+
+```{r}
+calculate_terms <- function(m, l, u, t, n) {
+  terms <- numeric(4 * n)
+  for (i in 1:n) {
+    index <- 4 * (i - 1)
+    
+    term1 <- (2 * i * l - 2 * (i - 1) * u - t)
+    term2 <- (2 * i * u - 2 * i * l + t)
+    term3 <- (2 * i * u - 2 * (i - 1) * l - t)
+    term4 <- (2 * i * l - 2 * i * u + t)
+    
+    terms[index + 1] <- term1
+    terms[index + 2] <- term2
+    terms[index + 3] <- term3
+    terms[index + 4] <- term4
+  }
+  return(sort(terms))
+}
+```
+
+
+```{r}
+
+# Create a dataset of values from a normal distribution centered at 0
+x <- seq(-15, 15, by = 0.01)  # Define the range of x values
+y <- dnorm(x, mean = 0, sd = 1)  # Create corresponding y values
+
+# Create a data frame from the x and y values
+data <- data.frame(x, y)
+
+
+# Define the x-coordinates for the vertical lines
+vertical_line_positions <- calculate_terms(m = 0, l = -1, u = 2, t = 1.5, n = 5)
+
+
+```
+
+
+
+```{r}
+
+# Create the ggplot
+gg <- ggplot(data, aes(x, y)) +
+  geom_rect(aes(xmin = -1, xmax = 2, ymin = 0, ymax = Inf, fill = "palered", alpha = 0.01)) +  # Add a red box
+  geom_line(size = 1) + 
+  geom_vline(xintercept = 1.5, color = "blue") +  # Add a blue vertical line at 1.5
+  geom_vline(xintercept = vertical_line_positions, color = "green") + 
+  geom_vline(xintercept = c(-1, 2), color = "red") + 
+  labs(title = "Normal Density Curve", x = "X", y = "Density") +
+  scale_x_continuous(breaks = c(-1, 0, 1.5, 2, vertical_line_positions)) +  # Only label the axis at specified points
+  coord_cartesian(xlim = c(-12, 12)) + 
+  theme_minimal() +
+  guides(fill = "none", alpha = "none")  # Remove the legend
+
+
+# Print the plot
+gg
+
+```
+
+
+
+```{r}
+
+# Create a dataset of values from a normal distribution centered at 0
+x2 <- seq(-15, 15, by = 0.01)  # Define the range of x values
+y2 <- dnorm(x2, mean = 1.5, sd = 1)  # Create corresponding y values
+
+# Create a data frame from the x and y values
+data2 <- data.frame(x2, y2)
+
+
+# Define the x-coordinates for the vertical lines
+vertical_line_positions2 <- calculate_terms(m = 1.5, l = -1, u = 2, t = 0, n = 5)
+
+
+```
+
+
+
+```{r}
+
+# Create the ggplot
+gg2 <- ggplot(data2, aes(x2, y2)) +
+  geom_rect(aes(xmin = -1, xmax = 2, ymin = 0, ymax = Inf, fill = "palered", alpha = 0.01)) +  # Add a red box
+  geom_line(size = 1) + 
+  geom_vline(xintercept = 0, color = "blue") +  # Add a blue vertical line at 0
+  geom_vline(xintercept = vertical_line_positions2, color = "green") + 
+  geom_vline(xintercept = c(-1, 2), color = "red") + 
+  labs(title = "Normal Density Curve", x = "X", y = "Density") +
+  scale_x_continuous(breaks = c(-1, 0, 1.5, 2, vertical_line_positions2)) +  # Only label the axis at specified points
+  coord_cartesian(xlim = c(-12, 12)) + 
+  theme_minimal() +
+  guides(fill = "none", alpha = "none")  # Remove the legend
+
+
+# Print the plot
+gg2
+
+```
+
+
+```{r}
+gg
+gg2
+```
+
+
+
+

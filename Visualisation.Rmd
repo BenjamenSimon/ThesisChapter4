@@ -80,11 +80,25 @@ ut19 = read.csv("Inference/Results_19_[Inf][Det][mSE][mEI][arSE][arEI][arDet][ar
 
 ## Summarise the results
 
-summary(r19[ , ])
+summary(r19[ -c(1:100000), ])
 
 summary(or19[ , ])
 
 summary(ar19[ , ])
+
+coda::effectiveSize(r19)
+
+apply(r19[ -c(1:100000), ], 2, function(column) {
+  quantiles <- quantile(column, c(0.025, 0.975))
+  rounded_quantiles <- signif(quantiles, digits = 3)  # Round to 3 significant figures
+  return(rounded_quantiles)
+})
+
+apply(r19[-(1:100000) , ], 2, function(column) {
+  std_dev <- sd(column)  # Calculate standard deviation
+  rounded_std_dev <- signif(std_dev, digits = 3)  # Round to 3 significant figures
+  return(rounded_std_dev)
+})
 
 ```
 
@@ -137,6 +151,19 @@ ggsave(filename = "Visualisation/hist_inf.png", plot = hist_plot_inf, width = 9,
 
 ## Plot the results
 
+hist_plot_inf_w_prior = gg_hist_plot_inf_w_prior(r19, or19, params, 100000, c(0.0005, 0.006), c(0.0015, 0.007), c(0.008, 0.017), c(0.0025, 0.005), c(0.047, 0.052), c(2, 0.001, 2, 0.002, 3, 0.005, 2, 0.002, 1, 0.05))
+
+## Save the results
+
+ggsave(filename = "Visualisation/hist_inf_w_prior.png", plot = hist_plot_inf_w_prior, width = 9, height = 12)
+
+```
+
+
+```{r Plot the results _10}
+
+## Plot the results
+
 hist_plot_det = gg_hist_plot_det(r19, or19, params, 100000, c(0.65, 0.82), c(0.08, 0.25))
 
 ## Save the results
@@ -147,7 +174,17 @@ ggsave(filename = "Visualisation/hist_det.png", plot = hist_plot_det, width = 9,
 
 
 
+```{r Plot the results _10}
 
+## Plot the results
+
+hist_plot_det_w_prior = gg_hist_plot_det_w_prior(r19, or19, params, 100000, c(0.65, 0.82), c(0.08, 0.25), c(1.5, 0.5, 0.4, 1.6))
+
+## Save the results
+
+ggsave(filename = "Visualisation/hist_det_w_prior.png", plot = hist_plot_det_w_prior, width = 9, height = 6)
+
+```
 
 
 
